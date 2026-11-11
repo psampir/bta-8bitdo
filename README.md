@@ -5,6 +5,7 @@ Makes every 8BitDo controller work with [Better than Adventure!](https://bettert
 
 - Mod id: `eightbitdo` · package `pl.psampir.bta.eightbitdo` · version `1.0.0+8.0.1`
 - Client-side only, Minecraft 8.0.1 (BTA) + Babric / Fabric loader
+- Adds the missing GLFW controller mappings *and* a per-device button-layout toggle
 - Licensed MIT; the bundled mapping data is SDL GameControllerDB data under the zlib license
 
 ## The problem
@@ -41,13 +42,18 @@ from the GUID the device actually reports:
 not remove the extra entry — so the pad is already a gamepad when `initGLFW` counts
 controllers, and BTA logs `1 controllers found!`.
 
-Three moving parts:
+Moving parts:
 
 | Class | Role |
 |---|---|
 | `pl.psampir.bta.eightbitdo.MappingStore` | Parses the 8BitDo slice of SDL GameControllerDB, resolves a mapping for a live GUID (exact GUID → same bus/VID/PID → same VID/PID → XInput fallback). No Minecraft, LWJGL or SLF4J imports. |
 | `pl.psampir.bta.eightbitdo.EightBitDoSupport` | Walks joysticks `0..GLFW_JOYSTICK_LAST`, skips non-8BitDo and already-known pads, feeds the resolved line to GLFW, remembers what it registered, and never lets an exception escape into the game. |
-| `pl.psampir.bta.eightbitdo.mixin.InputHandlerMixin` | `@Inject` at `HEAD` of `InputHandler.initGLFW` (register before BTA counts) and of `InputHandler.poll` (rescan every 20 frames for hot-plug). `remap = false`, no refmap — BTA is unobfuscated. |
+| `pl.psampir.bta.eightbitdo.LayoutConfig` | Reads and writes `config/eightbitdo.properties`: per-GUID, per-name and per-VID:PID button-layout overrides. JDK-only, so it is unit-tested outside the game. |
+| `pl.psampir.bta.eightbitdo.mixin.InputHandlerMixin` | `@Inject` at `HEAD` of `InputHandler.initGLFW` (register before BTA counts) and of `InputHandler.poll` (rescan every 20 frames for hot-plug). |
+| `pl.psampir.bta.eightbitdo.mixin.ControllerTypeMixin` | `@Inject` at `HEAD` of `ControllerType.fromController`, cancellable: returns the layout chosen in the config file instead of BTA's database entry. |
+| `pl.psampir.bta.eightbitdo.mixin.ScreenControllerSetupMixin` | Adds the `Layout` button to the controller setup screen and recreates the controller input when the layout changes, so the new glyphs apply immediately. |
+
+All three mixins use `remap = false`, because BTA ships unobfuscated classes.
 
 GUID fields are decoded little-endian the way
 `net.minecraft.client.input.glfw.GlfwGamepad` does it: bus in bytes 0-3, vendor id 4-5,
@@ -85,7 +91,9 @@ file.
    1 controllers found!
    ```
 
-4. In *Options → Controls* the pad appears as `(UNKNOWN)`; that is expected, see below.
+4. In *Options → Controls* the pad appears as `(UNKNOWN)`; that is expected. The controller
+   setup screen also has a `Layout` button — pick `NINTENDO SWITCH` if your pad has a
+   Switch-style ABXY shell (see below).
 
 ## The `(UNKNOWN)` label
 
@@ -94,9 +102,93 @@ in that table, so the controller is labelled `(UNKNOWN)`. This is cosmetic: BTA'
 controller type already uses the **XBOX layout and the `xbox_360` glyphs**, so buttons,
 sticks, triggers and the on-screen prompts all behave like an Xbox pad.
 
-Adding a display name would require a second mixin into `ControllerTypeDatabase`; that is
-deliberately not done, because it buys a string and risks a second, unnecessary hook into
-BTA internals.
+If your pad has a Switch-style ABXY shell, set its layout to `switch` — see below. The
+button added by this mod does that without a second mixin into `ControllerTypeDatabase`.
+
+## Button layouts (ABXY shells)
+
+8BitDo sells the same electronics with two different face-button shells:
+
+| Xbox shell | Switch shell | Physical positions |
+|---|---|---|
+| `A` bottom, `B` right, `X` left, `Y` top | `B` bottom, `A` right, `Y` left, `X` top | same |
+
+The hardware is identical, so **neither the USB ids nor the names can tell the variants
+apart**. The families that ship in both shells are:
+
+- Ultimate 2 Wireless / Ultimate 2 Bluetooth
+- Ultimate 2C Wireless / Ultimate 2C Bluetooth
+- Ultimate C Wireless / Ultimate C Bluetooth
+- Ultimate 2.4G / Ultimate Bluetooth
+
+Each pair shares one USB product id — `310b` for the Ultimate 2 / Ultimate 2C line, `3106`
+for the Ultimate C / Ultimate 2.4G line — and usually the same GLFW name, because that name
+comes from the mapping database. Auto-detection is therefore impossible and the layout is a
+manual, per-device choice; the mod ships with `AUTO` for every pad.
+
+### The Layout button
+
+BTA's controller setup screen (the one with the pad diagram, opened from *Options →
+Controller... → Select Controller...*) gets an extra button at the bottom:
+
+```
+Layout: AUTO (UNKNOWN)
+```
+
+It acts on the selected controller and cycles
+
+```
+AUTO  ->  XBOX 360  ->  NINTENDO SWITCH  ->  AUTO
+```
+
+- `AUTO` shows the effective type in brackets and hands the pad back to BTA's database
+  (`UNKNOWN`, which draws Xbox glyphs, for most 8BitDo pads).
+- `XBOX 360` forces `xbox_360`.
+- `NINTENDO SWITCH` forces `switch` — the right choice for a Switch-shell pad, because
+  BTA's `switch.png` draws `B/A/Y/X` exactly where the shell has them, with no
+  `controllerSwapAB/XY` setting needed.
+
+Each click writes the choice to the config file and recreates the controller input, so the
+glyphs change on the spot. The button is hidden while no controller is selected; the
+controller-select button above it and *Back* keep working as before.
+
+Only these three values are in the cycle on purpose: PS4/PS5/Steam layouts exist in the
+config file for completeness but are not something you toggle by accident.
+
+If you previously enabled BTA's *Swap A & B* or *Swap X & Y* options to make an Xbox glyph
+set fit a Switch shell, turn them off when you pick `NINTENDO SWITCH`: those options swap
+the **input**, while the layout only fixes the **labels**, so together they cancel out.
+
+### The config file
+
+`config/eightbitdo.properties`, next to `options.txt` in the instance's `minecraft/`
+folder:
+
+```properties
+# exact GLFW GUID (32 hex characters)
+guid:03000000c82d00000b31000000010000 = switch
+# vendor:product, hexadecimal
+2dc8:310b = xbox_360
+# case-insensitive substring of the controller name
+name:Ultimate = switch
+```
+
+- Values: `auto`, `xbox_360`, `xbox_one`, `xinput`, `ps3`, `ps4`, `ps5`, `switch`,
+  `steam`, `steam_deck`. Unknown values are ignored and reported in the log once.
+- Precedence: `guid:` → `name:` → `vid:pid`. `guid = auto` stops the search, which lets
+  one pad opt out of a broader `name:` or `vid:pid` rule.
+- The file is created/rewritten by the Layout button (atomically, header included); you
+  can also edit it by hand, and the button keeps your other lines and their spelling.
+- Deleting a line, or setting `auto`, is always safe: it only changes which glyph set BTA
+  draws.
+
+**PlayStation note:** 8BitDo does not make pads with PlayStation symbols, so `ps3`, `ps4`
+and `ps5` exist for real Sony controllers (and for anyone who prefers those glyphs); they
+are config-only, not part of the button cycle.
+
+None of this changes input: BTA reads buttons and axes by GLFW index and uses
+`ControllerType` purely for labels and sprites. A wrong layout mislabels buttons, it never
+remaps them.
 
 ## Hot-plug
 
@@ -121,16 +213,15 @@ $HOME/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/java/java-runt
   so the first build needs network access (~60 MB) and the Minecraft client jar it lists.
 - Output: `build/libs/eightbitdo-1.0.0+8.0.1.jar` (plus a `-sources` jar).
 
-No refmap is generated because the mixin is `remap = false`; BTA ships unobfuscated
-classes. Mixin targets are checked by the compiler, so a renamed `initGLFW`/`poll` breaks
-the build instead of failing at runtime.
+No refmap is generated because the mixins are `remap = false`; BTA ships unobfuscated
+classes. The compiler checks the target classes and `tools/verify.fish` checks the method
+names with `javap`, so a BTA rename fails before the game is launched.
 
 ## Verification harness
 
-`tools/verify.fish` compiles `MappingStore` and `EightBitDoSupport` **with no Minecraft on
-the classpath** against the same LWJGL 3.3.3 jars BTA uses (taken from PrismLauncher's
-libraries), runs `tools/VerifyMappings.java`, and asserts the real pad flips from
-`isGamepad=false` to `isGamepad=true`:
+`tools/verify.fish` compiles `MappingStore`, `EightBitDoSupport` and `LayoutConfig` **with
+no Minecraft on the classpath** against the same LWJGL 3.3.3 jars BTA uses (taken from
+PrismLauncher's libraries), then runs two harnesses:
 
 ```fish
 set -x JAVA_HOME ~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/java/java-runtime-delta
@@ -140,12 +231,22 @@ tools/verify.fish
 Without `JAVA_HOME` the script falls back to the Temurin JDKs in PrismLauncher's flatpak
 data directory, so on this machine it also runs as plain `tools/verify.fish`.
 
-It prints every joystick GLFW sees, the resolved mapping (`kind`, name, body and complete
-mapping line), the gamepad state readback, and calls `registerMissingGamepads()` a second
-time to prove nothing is registered twice. It also calls `javap` on the instance's
-`bta-v8.0.1.jar` and fails if `InputHandler.initGLFW`/`poll` no longer exist, and — when
-`BTA_JAR` points at that jar — feeds BTA's whole bundled database to GLFW afterwards to
-prove the extra mapping survives (the order `InputHandler.initGLFW` actually uses).
+`tools/VerifyLayout.java` exercises `LayoutConfig` on temporary files: comments, key/value
+case-insensitivity, precedence (`guid:` → `name:` → `vid:pid`), the `auto` opt-out, invalid
+entries being ignored with warnings, `setGuid`/`save` round-trips and removal. It prints one
+line per check.
+
+`tools/VerifyMappings.java` prints every joystick GLFW sees, the resolved mapping (`kind`,
+name, body and complete mapping line), the gamepad state readback, and calls
+`registerMissingGamepads()` a second time to prove nothing is registered twice. It also
+feeds BTA's whole bundled database to GLFW afterwards to prove the extra mapping survives
+(the order `InputHandler.initGLFW` actually uses) — when `BTA_JAR` points at the instance's
+`bta-v8.0.1.jar`.
+
+Before either harness runs, `javap` inspects that jar and fails if `InputHandler.initGLFW`/
+`poll`, `ControllerType.fromController(GlfwGamepad)` or `ScreenControllerSetup.init`/`tick`
+no longer exist, so a BTA update that renames a mixin target fails in `tools/verify.fish`
+instead of at runtime.
 
 Exit codes: `0` pass, `1` assertion failed, `2` GLFW failed to start, `3` no 8BitDo pad
 attached. Compiled classes go to `tools/build/` and are gitignored.
@@ -187,17 +288,23 @@ counted as registered once `glfwJoystickIsGamepad()` actually returns true for t
 
 ## Limitations
 
-- The mixin hooks BTA internals (`InputHandler.initGLFW` and `InputHandler.poll`). A BTA
-  version that renames or restructures them fails fast: the build breaks on the missing
-  target, and a runtime mismatch makes Mixin log an injection error. Nothing else in BTA
-  is modified.
+- The mixins hook BTA internals: `InputHandler.initGLFW`/`poll`,
+  `ControllerType.fromController` and `ScreenControllerSetup.init`/`tick`. A BTA version
+  that renames or restructures them fails fast — `tools/verify.fish` checks the targets with
+  `javap`, the build breaks on a missing class, and a runtime mismatch makes Mixin log an
+  injection error. Nothing else in BTA is modified.
+- The button layout is a manual choice. Pads that share an id but not a shell cannot be
+  detected, so a pad that is plugged into a different instance keeps whatever rule matches
+  there; the `Layout` button and `config/eightbitdo.properties` are the only way to tell
+  them apart.
 - Mappings are a snapshot of SDL's database plus BTA's. A pad (or revision) absent from
   both falls back to the generic XInput body, which is right for pads in XInput mode but
   cannot invent bindings for exotic layouts (arcade sticks, N64 pads, paddles).
 - Only 8BitDo hardware (vendor `0x2dc8`) is handled. Other 8BitDo-labelled devices that
   report a different vendor id are ignored, and so are the many non-8BitDo pads in the same
   database.
-- The on-screen type stays `(UNKNOWN)`; glyphs are the Xbox 360 set.
+- Layout overrides only change labels and sprites. A wrong override mislabels buttons; it
+  never remaps them, and it is always undone by cycling back to `AUTO`.
 - The `platform:` field is only used to prefer Linux entries; GLFW itself ignores it, so it
   is stripped from the line handed to GLFW.
 
@@ -210,6 +317,8 @@ counted as registered once `glfwJoystickIsGamepad()` actually returns true for t
 - `tools/verify.fish`: the pad goes from `isGamepad=false` to `isGamepad=true`, resolves
   as `SAME_BUS_VENDOR_PRODUCT` to the SDL `8BitDo Ultimate 2` mapping, keeps that mapping
   after BTA's own 594 KB database is loaded, and a second scan registers nothing.
+- `tools/VerifyLayout.java`: 25 checks over the config parser, precedence, `auto`, saving,
+  reloading and removal.
 
 ## Credits and license
 

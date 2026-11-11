@@ -1,8 +1,8 @@
 #!/usr/bin/env fish
 #
-# Compiles the mod's Minecraft-free classes together with the verification harness
-# against the LWJGL 3.3.3 build that BTA uses, then runs the harness against the
-# controller attached to this machine.
+# Compiles the mod's Minecraft-free classes together with the verification harnesses,
+# checks the mixin targets in BTA with javap, runs the LayoutConfig tests, and finally
+# exercises the mapping code against the controller attached to this machine.
 #
 # Nothing is written outside the project: classes land in tools/build/ (gitignored).
 #
@@ -76,6 +76,7 @@ else
 end
 
 mkdir -p $classes
+find $classes -name '*.class' -delete 2>/dev/null
 
 if test -n "$BTA_JAR"
     set -l javap (path dirname $javac)/javap
@@ -89,8 +90,36 @@ if test -n "$BTA_JAR"
         echo "verify: InputHandler no longer declares static poll() -- InputHandlerMixin target is stale" >&2
         exit 1
     end
-    echo "  InputHandler.initGLFW(Minecraft) and InputHandler.poll() found -- mixin targets valid"
+    echo "  InputHandler.initGLFW(Minecraft) and InputHandler.poll() found"
+
+    set -l controller_type ($javap -p -classpath "$BTA_JAR" net.minecraft.client.input.controller.ControllerType 2>/dev/null)
+    if not string match -q -r "static .*fromController\(net\.minecraft\.client\.input\.glfw\.GlfwGamepad\)" "$controller_type"
+        echo "verify: ControllerType no longer declares static fromController(GlfwGamepad) -- ControllerTypeMixin target is stale" >&2
+        exit 1
+    end
+    echo "  ControllerType.fromController(GlfwGamepad) found"
+
+    set -l setup_screen ($javap -p -classpath "$BTA_JAR" net.minecraft.client.gui.ScreenControllerSetup 2>/dev/null)
+    if not string match -q -r "public void init\(\)" "$setup_screen"
+        echo "verify: ScreenControllerSetup no longer declares init() -- ScreenControllerSetupMixin target is stale" >&2
+        exit 1
+    end
+    if not string match -q -r "public void tick\(\)" "$setup_screen"
+        echo "verify: ScreenControllerSetup no longer declares tick() -- ScreenControllerSetupMixin target is stale" >&2
+        exit 1
+    end
+    echo "  ScreenControllerSetup.init() and ScreenControllerSetup.tick() found -- mixin targets valid"
 end
+
+echo "verify: compiling layout config + its tests"
+$javac -encoding UTF-8 -Xlint:all -d $classes \
+    $root/src/main/java/pl/psampir/bta/eightbitdo/LayoutConfig.java \
+    $root/tools/VerifyLayout.java
+or exit 1
+
+echo "verify: running layout tests"
+$java -cp $classes VerifyLayout
+or exit 1
 
 echo "verify: compiling mod classes + harness"
 $javac -encoding UTF-8 -Xlint:all -d $classes -cp $classpath:$slf4j \
