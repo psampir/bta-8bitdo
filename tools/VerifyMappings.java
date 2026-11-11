@@ -24,8 +24,8 @@ import java.util.zip.ZipFile;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWGamepadState;
 import org.lwjgl.system.MemoryUtil;
-import pl.sampir.bta.eightbitdo.EightBitDoSupport;
-import pl.sampir.bta.eightbitdo.MappingStore;
+import pl.psampir.bta.eightbitdo.EightBitDoSupport;
+import pl.psampir.bta.eightbitdo.MappingStore;
 
 public final class VerifyMappings {
 	/** GUID of the pad this mod was written for (8BitDo Ultimate 2 Wireless, UM 2 receiver). */

@@ -1,4 +1,4 @@
-package pl.sampir.bta.eightbitdo;
+package pl.psampir.bta.eightbitdo;
 
 import java.io.BufferedReader;
 import java.io.IOException;

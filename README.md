@@ -3,7 +3,7 @@
 Makes every 8BitDo controller work with [Better than Adventure!](https://betterthanadventure.net/)
 8.0.1's native controller support, without touching the game jar.
 
-- Mod id: `eightbitdo` · package `pl.sampir.bta.eightbitdo` · version `1.0.0+8.0.1`
+- Mod id: `eightbitdo` · package `pl.psampir.bta.eightbitdo` · version `1.0.0+8.0.1`
 - Client-side only, Minecraft 8.0.1 (BTA) + Babric / Fabric loader
 - Licensed MIT; the bundled mapping data is SDL GameControllerDB data under the zlib license
 
@@ -45,9 +45,9 @@ Three moving parts:
 
 | Class | Role |
 |---|---|
-| `pl.sampir.bta.eightbitdo.MappingStore` | Parses the 8BitDo slice of SDL GameControllerDB, resolves a mapping for a live GUID (exact GUID → same bus/VID/PID → same VID/PID → XInput fallback). No Minecraft, LWJGL or SLF4J imports. |
-| `pl.sampir.bta.eightbitdo.EightBitDoSupport` | Walks joysticks `0..GLFW_JOYSTICK_LAST`, skips non-8BitDo and already-known pads, feeds the resolved line to GLFW, remembers what it registered, and never lets an exception escape into the game. |
-| `pl.sampir.bta.eightbitdo.mixin.InputHandlerMixin` | `@Inject` at `HEAD` of `InputHandler.initGLFW` (register before BTA counts) and of `InputHandler.poll` (rescan every 20 frames for hot-plug). `remap = false`, no refmap — BTA is unobfuscated. |
+| `pl.psampir.bta.eightbitdo.MappingStore` | Parses the 8BitDo slice of SDL GameControllerDB, resolves a mapping for a live GUID (exact GUID → same bus/VID/PID → same VID/PID → XInput fallback). No Minecraft, LWJGL or SLF4J imports. |
+| `pl.psampir.bta.eightbitdo.EightBitDoSupport` | Walks joysticks `0..GLFW_JOYSTICK_LAST`, skips non-8BitDo and already-known pads, feeds the resolved line to GLFW, remembers what it registered, and never lets an exception escape into the game. |
+| `pl.psampir.bta.eightbitdo.mixin.InputHandlerMixin` | `@Inject` at `HEAD` of `InputHandler.initGLFW` (register before BTA counts) and of `InputHandler.poll` (rescan every 20 frames for hot-plug). `remap = false`, no refmap — BTA is unobfuscated. |
 
 GUID fields are decoded little-endian the way
 `net.minecraft.client.input.glfw.GlfwGamepad` does it: bus in bytes 0-3, vendor id 4-5,

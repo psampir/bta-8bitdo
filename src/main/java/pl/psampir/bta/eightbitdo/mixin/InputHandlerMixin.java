@@ -1,4 +1,4 @@
-package pl.sampir.bta.eightbitdo.mixin;
+package pl.psampir.bta.eightbitdo.mixin;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.InputHandler;
@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pl.sampir.bta.eightbitdo.EightBitDoSupport;
+import pl.psampir.bta.eightbitdo.EightBitDoSupport;
 
 /**
  * Hooks BTA's GLFW controller setup.

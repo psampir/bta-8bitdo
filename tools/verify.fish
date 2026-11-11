@@ -94,8 +94,8 @@ end
 
 echo "verify: compiling mod classes + harness"
 $javac -encoding UTF-8 -Xlint:all -d $classes -cp $classpath:$slf4j \
-    $root/src/main/java/pl/sampir/bta/eightbitdo/MappingStore.java \
-    $root/src/main/java/pl/sampir/bta/eightbitdo/EightBitDoSupport.java \
+    $root/src/main/java/pl/psampir/bta/eightbitdo/MappingStore.java \
+    $root/src/main/java/pl/psampir/bta/eightbitdo/EightBitDoSupport.java \
     $root/tools/VerifyMappings.java
 or exit 1
 
