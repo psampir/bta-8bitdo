@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "eightbitdo",
+	"version": "${version}",
+	"name": "8BitDo Controller Support",
+	"description": "Registers runtime GLFW gamepad mappings for every 8BitDo controller, so Better than Adventure's native controller support actually sees it.",
+	"authors": [
+		"psampir"
+	],
+	"contact": {
+		"homepage": "",
+		"sources": ""
+	},
+	"license": "MIT",
+	"environment": "client",
+	"mixins": [
+		"eightbitdo.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=${fabricloader}",
+		"minecraft": "*",
+		"java": ">=${java}"
+	}
+}
