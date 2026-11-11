@@ -21,11 +21,22 @@ end
 
 set -l java $JAVA_HOME/bin/java
 set -l javac $JAVA_HOME/bin/javac
-if not test -x $java
+if not test -x "$javac"
+    # Fall back to the Temurin JDKs the PrismLauncher flatpak already downloaded.
+    for bin in $HOME/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/java/java-runtime-gamma/bin \
+        $HOME/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/java/java-runtime-delta/bin
+        if test -x "$bin/javac"
+            set java $bin/java
+            set javac $bin/javac
+            break
+        end
+    end
+end
+if not test -x "$javac"
     set java (command -s java)
     set javac (command -s javac)
 end
-if test -z "$javac"
+if test -z "$javac"; or not test -x "$javac"
     echo "verify: no JDK found, set JAVA_HOME" >&2
     exit 1
 end

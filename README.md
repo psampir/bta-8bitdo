@@ -47,7 +47,7 @@ Three moving parts:
 |---|---|
 | `pl.sampir.bta.eightbitdo.MappingStore` | Parses the 8BitDo slice of SDL GameControllerDB, resolves a mapping for a live GUID (exact GUID → same bus/VID/PID → same VID/PID → XInput fallback). No Minecraft, LWJGL or SLF4J imports. |
 | `pl.sampir.bta.eightbitdo.EightBitDoSupport` | Walks joysticks `0..GLFW_JOYSTICK_LAST`, skips non-8BitDo and already-known pads, feeds the resolved line to GLFW, remembers what it registered, and never lets an exception escape into the game. |
-| `pl.sampir.bta.eightbitdo.mixin.InputHandlerMixin` | `@Inject` at `HEAD` of `InputHandler.initGLFW` (register before BTA counts) and of `InputHandler.poll` (rescan about once per second for hot-plug). `remap = false`, no refmap — BTA is unobfuscated. |
+| `pl.sampir.bta.eightbitdo.mixin.InputHandlerMixin` | `@Inject` at `HEAD` of `InputHandler.initGLFW` (register before BTA counts) and of `InputHandler.poll` (rescan every 20 frames for hot-plug). `remap = false`, no refmap — BTA is unobfuscated. |
 
 GUID fields are decoded little-endian the way
 `net.minecraft.client.input.glfw.GlfwGamepad` does it: bus in bytes 0-3, vendor id 4-5,
@@ -100,10 +100,10 @@ BTA internals.
 
 ## Hot-plug
 
-`InputHandler.poll()` runs once per client tick, and `tick()` rescans every 20 calls
-(~1 s). Plug the pad in (or wake it) while the game is running and BTA picks it up in the
-next poll, exactly like a pad it knew about from the start. Mappings already registered
-are remembered, so nothing is re-registered or re-logged.
+`InputHandler.poll()` runs once per rendered frame, and `tick()` rescans every 20 calls
+(a few times per second). Plug the pad in (or wake it) while the game is running and BTA
+picks it up in the next poll, exactly like a pad it knew about from the start. Mappings
+already registered are remembered, so nothing is re-registered or re-logged.
 
 ## Build
 
@@ -136,6 +136,9 @@ libraries), runs `tools/VerifyMappings.java`, and asserts the real pad flips fro
 set -x JAVA_HOME ~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/java/java-runtime-delta
 tools/verify.fish
 ```
+
+Without `JAVA_HOME` the script falls back to the Temurin JDKs in PrismLauncher's flatpak
+data directory, so on this machine it also runs as plain `tools/verify.fish`.
 
 It prints every joystick GLFW sees, the resolved mapping (`kind`, name, body and complete
 mapping line), the gamepad state readback, and calls `registerMissingGamepads()` a second

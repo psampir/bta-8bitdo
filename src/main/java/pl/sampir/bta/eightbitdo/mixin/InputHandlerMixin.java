@@ -16,8 +16,8 @@ import pl.sampir.bta.eightbitdo.EightBitDoSupport;
  * registers the 8BitDo mappings first, so that count includes our pads. BTA then reads
  * its own database into the same GLFW state, which is additive: our entries survive.</p>
  *
- * <p>{@code poll} runs once per client tick, which is where hot-plugged pads are picked
- * up; {@link EightBitDoSupport#tick()} only really scans about once per second.</p>
+ * <p>{@code poll} runs once per rendered frame, which is where hot-plugged pads are picked
+ * up; {@link EightBitDoSupport#tick()} only really scans every 20 frames.</p>
  *
  * <p>BTA is unobfuscated, hence {@code remap = false} everywhere and no refmap.</p>
  */

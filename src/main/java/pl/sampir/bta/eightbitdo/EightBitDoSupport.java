@@ -33,7 +33,11 @@ public final class EightBitDoSupport {
 	/** USB vendor id of every 8BitDo device this mod handles. */
 	public static final int VENDOR_ID = MappingStore.VENDOR_ID;
 
-	/** How many {@link #tick()} calls (20 per second in BTA) pass between hot-plug scans. */
+	/**
+	 * How many {@link #tick()} calls pass between hot-plug scans. BTA calls
+	 * {@code InputHandler.poll()} once per rendered frame, so this is a few scans per
+	 * second at normal frame rates.
+	 */
 	public static final int TICKS_PER_SCAN = 20;
 
 	/**
