@@ -19,8 +19,14 @@ token that does not exist on this machine.
   license `MIT`, source and issues pointing at `github.com/psampir/bta-8bitdo`,
   `is_draft: true`.
 - **Version:** name and number `1.0.0+8.0.1`, game version `b1.7.3`, loader
-  `bta-babric`, type `release`, no dependencies, jar
+  `bta-babric`, type `release`, environment `client_only`, no dependencies, jar
   `build/libs/eightbitdo-1.0.0+8.0.1.jar`.
+
+Two fields look redundant but are not: `project.json` keeps `initial_versions: []` because
+the API rejects the request with `missing field initial_versions` without it even though the
+field is deprecated, and `version.json` sets `environment: client_only` because the legacy
+`client_side`/`server_side` fields are ignored on creation (the project shows `unknown`
+until a version declares the environment).
 
 `bta-babric` is a Modrinth **loader**, not a category: categories on Modrinth are limited to
 the `utility`, `library`, … list, so it lives in `version.json` → `loaders`. The publish
@@ -75,11 +81,18 @@ Keep the project id from the output for later releases:
 set -gx MODRINTH_PROJECT_ID <id>
 ```
 
-## After the first run
+## Current state
 
-1. Open the project page, check the icon, description and version, and add the in-game
-   screenshot (`docs/screenshots/controller-setup.png`) as a gallery image — the web UI is
-   simpler than the gallery endpoint.
-2. Click **Submit for review**: projects are created as drafts and stay invisible until
-   Modrinth approves them.
-3. Replace the "Modrinth: coming soon" bullet in the main `README.md` with the project link.
+Published as a draft on 2026-11-16:
+
+- project `hi6SzlXH`, slug `bta-8bitdo` — <https://modrinth.com/mod/bta-8bitdo>
+- version `RE4vO4qq` (`1.0.0+8.0.1`, `b1.7.3`, `bta-babric`, environment `client_only`)
+- icon and the in-game screenshot (gallery, featured, ordering 0) are uploaded
+
+For later versions, keep `MODRINTH_PROJECT_ID=hi6SzlXH` set and run the script again; it
+skips project creation and uploads only the new version.
+
+## Remaining manual step
+
+Click **Submit for review** on the project page: projects are created as drafts and stay
+invisible to everyone else until Modrinth approves them.

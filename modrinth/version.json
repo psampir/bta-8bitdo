@@ -11,5 +11,6 @@
 	],
 	"featured": false,
 	"dependencies": [],
-	"file": "build/libs/eightbitdo-1.0.0+8.0.1.jar"
+	"file": "build/libs/eightbitdo-1.0.0+8.0.1.jar",
+	"environment": "client_only"
 }

@@ -12,5 +12,6 @@
 	"license_id": "MIT",
 	"source_url": "https://github.com/psampir/bta-8bitdo",
 	"issues_url": "https://github.com/psampir/bta-8bitdo/issues",
-	"is_draft": true
+	"is_draft": true,
+	"initial_versions": []
 }

@@ -13,7 +13,7 @@ Makes every 8BitDo controller work with [Better than Adventure!](https://bettert
 - Licensed MIT; the bundled mapping data is SDL GameControllerDB data under the zlib license
 - Source and releases: <https://github.com/psampir/bta-8bitdo> ·
   [Releases](https://github.com/psampir/bta-8bitdo/releases)
-- Modrinth: coming soon (project slug `bta-8bitdo`)
+- Modrinth: [modrinth.com/mod/bta-8bitdo](https://modrinth.com/mod/bta-8bitdo) — draft, awaiting review
 
 ## The problem
 
