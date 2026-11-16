@@ -1,0 +1,16 @@
+{
+	"slug": "bta-8bitdo",
+	"title": "8BitDo Controller Support",
+	"description": "Registers GLFW gamepad mappings for every 8BitDo controller and adds a per-device ABXY layout toggle to Better than Adventure! 8.0.1's controller setup screen.",
+	"body_file": "description.md",
+	"project_type": "mod",
+	"categories": [
+		"utility"
+	],
+	"client_side": "required",
+	"server_side": "unsupported",
+	"license_id": "MIT",
+	"source_url": "https://github.com/psampir/bta-8bitdo",
+	"issues_url": "https://github.com/psampir/bta-8bitdo/issues",
+	"is_draft": true
+}

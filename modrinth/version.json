@@ -1,0 +1,15 @@
+{
+	"name": "1.0.0+8.0.1",
+	"version_number": "1.0.0+8.0.1",
+	"changelog_file": "changelog.md",
+	"game_versions": [
+		"b1.7.3"
+	],
+	"version_type": "release",
+	"loaders": [
+		"bta-babric"
+	],
+	"featured": false,
+	"dependencies": [],
+	"file": "build/libs/eightbitdo-1.0.0+8.0.1.jar"
+}
