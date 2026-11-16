@@ -346,8 +346,8 @@ counted as registered once `glfwJoystickIsGamepad()` actually returns true for t
   (zlib license, Copyright (c) 1997-2024 Sam Lantinga), merged with the database bundled in
   BTA 8.0.1. The zlib notice is reproduced in `LICENSE` and at the top of
   `eightbitdo-mappings.txt`.
-- Icon: original artwork, typeset from the OFL fonts Anton and Bungee — see
-  [`docs/logo/`](docs/logo/). It is not the official 8BitDo wordmark.
+- Icon: artwork supplied by the project author — see [`docs/logo/`](docs/logo/).
+  It is not the official 8BitDo wordmark.
 - Project scaffold: [Turnip-Labs/bta-example-mod](https://github.com/Turnip-Labs/bta-example-mod)
   (branch `8.0`).
 
@@ -355,5 +355,5 @@ counted as registered once `glfwJoystickIsGamepad()` actually returns true for t
 
 Not affiliated with 8BitDo or the Better than Adventure! team. "8BitDo" and "Better than
 Adventure!" are used descriptively; all trademarks belong to their respective owners. The
-icon is an original approximation drawn from free fonts, not official artwork.
+icon is the project's own artwork, not official artwork.
 

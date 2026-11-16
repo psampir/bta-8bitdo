@@ -66,7 +66,7 @@ The script:
   is set, in which case that project id (or slug) is used and nothing is created;
 - validates the categories against `/v2/tag/category` and drops unknown ones with a warning;
 - uploads `docs/logo/icon.png` with `PATCH /project/{id}/icon?ext=png` (Modrinth's limit is
-  256 KiB, the icon is ~179 KiB);
+  256 KiB, the icon is ~239 KiB);
 - uploads the jar from `version.json` as version `1.0.0+8.0.1` (multipart `data` + file).
 
 Keep the project id from the output for later releases:

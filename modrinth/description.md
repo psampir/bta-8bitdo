@@ -77,7 +77,7 @@ BTA 8.0.1 (Babric), 8BitDo Ultimate 2 Bluetooth in 2.4G/XInput mode (`2dc8:310b`
 ## Credits
 
 - Mod code: MIT. Controller mapping data: SDL_GameControllerDB (zlib license, Copyright (c) 1997-2024 Sam Lantinga), merged with the database bundled in BTA 8.0.1.
-- Icon: original artwork typeset from the OFL fonts Anton and Bungee; not the official 8BitDo wordmark.
+- Icon: artwork by the project author; not the official 8BitDo wordmark.
 
 Not affiliated with 8BitDo or the Better than Adventure! team. "8BitDo" and "Better than Adventure!" are used descriptively; all trademarks belong to their respective owners.
 
