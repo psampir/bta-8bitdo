@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo/icon.png" width="128" alt="8BitDo Controller Support icon: BTA over 8BitDo">
+</p>
+
 # 8BitDo Controller Support
 
 Makes every 8BitDo controller work with [Better than Adventure!](https://betterthanadventure.net/)
@@ -7,6 +11,9 @@ Makes every 8BitDo controller work with [Better than Adventure!](https://bettert
 - Client-side only, Minecraft 8.0.1 (BTA) + Babric / Fabric loader
 - Adds the missing GLFW controller mappings *and* a per-device button-layout toggle
 - Licensed MIT; the bundled mapping data is SDL GameControllerDB data under the zlib license
+- Source and releases: <https://github.com/psampir/bta-8bitdo> ·
+  [Releases](https://github.com/psampir/bta-8bitdo/releases)
+- Modrinth: coming soon (project slug `bta-8bitdo`)
 
 ## The problem
 
@@ -94,6 +101,15 @@ file.
 4. In *Options → Controls* the pad appears as `(UNKNOWN)`; that is expected. The controller
    setup screen also has a `Layout` button — pick `NINTENDO SWITCH` if your pad has a
    Switch-style ABXY shell (see below).
+
+## In game
+
+![BTA controller setup screen with the 8BitDo Ultimate 2 and the Layout: NINTENDO SWITCH button](docs/screenshots/controller-setup.png)
+
+Verified on BTA 8.0.1 (Babric) with the 8BitDo Ultimate 2 Bluetooth in 2.4G/XInput mode on
+2026-11-16: the pad is listed as `8BitDo Ultimate 2`, typed `(NINTENDO SWITCH)`, drawn with
+the Switch glyphs B/A/Y/X, and the `Layout: NINTENDO SWITCH` button switches the glyph set
+on the spot and persists the choice in `config/eightbitdo.properties`.
 
 ## The `(UNKNOWN)` label
 
@@ -312,8 +328,11 @@ counted as registered once `glfwJoystickIsGamepad()` actually returns true for t
 
 - BTA 8.0.1, fabric-loader `0.18.4-bta.11`, LWJGL 3.3.3 (the GLFW native bundled by
   LWJGL reports itself as 3.4.0-dev).
-- 8BitDo Ultimate 2 Wireless through an 8BitDo UM 2 Receiver, USB `2dc8:310b`, driver
-  `xpad`, GUID `03000000c82d00000b31000000010000`.
+- 8BitDo Ultimate 2 Bluetooth in 2.4G/XInput mode through an 8BitDo UM 2 Receiver, USB
+  `2dc8:310b`, driver `xpad`, GUID `03000000c82d00000b31000000010000`.
+- In game, 2026-11-16: the controller setup screen shows `8BitDo Ultimate 2`,
+  `(NINTENDO SWITCH)`, the Switch glyphs B/A/Y/X and the `Layout: NINTENDO SWITCH` button;
+  cycling the layout redraws the glyphs immediately and the choice survives a restart.
 - `tools/verify.fish`: the pad goes from `isGamepad=false` to `isGamepad=true`, resolves
   as `SAME_BUS_VENDOR_PRODUCT` to the SDL `8BitDo Ultimate 2` mapping, keeps that mapping
   after BTA's own 594 KB database is loaded, and a second scan registers nothing.
@@ -327,5 +346,14 @@ counted as registered once `glfwJoystickIsGamepad()` actually returns true for t
   (zlib license, Copyright (c) 1997-2024 Sam Lantinga), merged with the database bundled in
   BTA 8.0.1. The zlib notice is reproduced in `LICENSE` and at the top of
   `eightbitdo-mappings.txt`.
+- Icon: original artwork, typeset from the OFL fonts Anton and Bungee — see
+  [`docs/logo/`](docs/logo/). It is not the official 8BitDo wordmark.
 - Project scaffold: [Turnip-Labs/bta-example-mod](https://github.com/Turnip-Labs/bta-example-mod)
   (branch `8.0`).
+
+## Disclaimer
+
+Not affiliated with 8BitDo or the Better than Adventure! team. "8BitDo" and "Better than
+Adventure!" are used descriptively; all trademarks belong to their respective owners. The
+icon is an original approximation drawn from free fonts, not official artwork.
+
