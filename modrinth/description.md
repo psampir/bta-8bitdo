@@ -19,7 +19,7 @@ An 8BitDo Ultimate 2 on the 8BitDo UM 2 receiver, for example, reports `03000000
 
 Requires a **Babric BTA 8.0.1** instance — plain BTA 8.0.1 cannot load mods. Use `bta_fabric_instance_8.0.1.zip` from [Turnip-Labs](https://github.com/Turnip-Labs) (fabric-loader `0.18.4-bta.11`) and Java 17+.
 
-1. Drop `eightbitdo-1.0.0+8.0.1.jar` into the instance's `mods` folder.
+1. Drop `eightbitdo-1.0.1+8.0.1.jar` into the instance's `mods` folder.
 2. Start the game with the controller connected. The log should show:
 
    ```

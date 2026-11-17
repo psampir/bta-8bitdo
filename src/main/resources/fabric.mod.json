@@ -8,10 +8,12 @@
 		"psampir"
 	],
 	"contact": {
-		"homepage": "",
-		"sources": ""
+		"homepage": "https://modrinth.com/mod/bta-8bitdo",
+		"sources": "https://github.com/psampir/bta-8bitdo",
+		"issues": "https://github.com/psampir/bta-8bitdo/issues"
 	},
 	"license": "MIT",
+	"icon": "icon.png",
 	"environment": "client",
 	"mixins": [
 		"eightbitdo.mixins.json"

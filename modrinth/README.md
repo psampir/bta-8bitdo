@@ -1,7 +1,7 @@
 # Modrinth publishing payload
 
 Everything needed to publish **8BitDo Controller Support** (`bta-8bitdo`, version
-`1.0.0+8.0.1`) on Modrinth. Nothing has been published yet: the API needs a personal access
+`1.0.1+8.0.1`) on Modrinth. Nothing has been published yet: the API needs a personal access
 token that does not exist on this machine.
 
 | File | Purpose |
@@ -18,9 +18,9 @@ token that does not exist on this machine.
   categories `["utility"]`, client side `required`, server side `unsupported`,
   license `MIT`, source and issues pointing at `github.com/psampir/bta-8bitdo`,
   `is_draft: true`.
-- **Version:** name and number `1.0.0+8.0.1`, game version `b1.7.3`, loader
+- **Version:** name and number `1.0.1+8.0.1`, game version `b1.7.3`, loader
   `bta-babric`, type `release`, environment `client_only`, no dependencies, jar
-  `build/libs/eightbitdo-1.0.0+8.0.1.jar`.
+  `build/libs/eightbitdo-1.0.1+8.0.1.jar`.
 
 Two fields look redundant but are not: `project.json` keeps `initial_versions: []` because
 the API rejects the request with `missing field initial_versions` without it even though the
@@ -73,7 +73,7 @@ The script:
 - validates the categories against `/v2/tag/category` and drops unknown ones with a warning;
 - uploads `docs/logo/icon.png` with `PATCH /project/{id}/icon?ext=png` (Modrinth's limit is
   256 KiB, the icon is ~239 KiB);
-- uploads the jar from `version.json` as version `1.0.0+8.0.1` (multipart `data` + file).
+- uploads the jar from `version.json` as version `1.0.1+8.0.1` (multipart `data` + file).
 
 Keep the project id from the output for later releases:
 

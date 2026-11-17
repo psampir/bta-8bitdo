@@ -7,7 +7,7 @@
 Makes every 8BitDo controller work with [Better than Adventure!](https://betterthanadventure.net/)
 8.0.1's native controller support, without touching the game jar.
 
-- Mod id: `eightbitdo` · package `pl.psampir.bta.eightbitdo` · version `1.0.0+8.0.1`
+- Mod id: `eightbitdo` · package `pl.psampir.bta.eightbitdo` · version `1.0.1+8.0.1`
 - Client-side only, Minecraft 8.0.1 (BTA) + Babric / Fabric loader
 - Adds the missing GLFW controller mappings *and* a per-device button-layout toggle
 - Licensed MIT; the bundled mapping data is SDL GameControllerDB data under the zlib license
@@ -86,9 +86,9 @@ file.
 
 ## Install
 
-1. Build the jar (below) or take it from `build/libs/eightbitdo-1.0.0+8.0.1.jar`.
+1. Build the jar (below) or take it from `build/libs/eightbitdo-1.0.1+8.0.1.jar`.
 2. Drop it into the instance's `mods` folder:
-   `.minecraft/mods/eightbitdo-1.0.0+8.0.1.jar` (Prism: right-click the instance →
+   `.minecraft/mods/eightbitdo-1.0.1+8.0.1.jar` (Prism: right-click the instance →
    *Folder* → *Minecraft* → `mods`).
 3. Start the game with the controller connected. The log should show
 
@@ -227,7 +227,7 @@ $HOME/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/java/java-runt
   instead of downloading one; change it to your own JDK 17 if it differs.
 - BTA 8.0.1 comes from `https://downloads.betterthanadventure.net/bta-client/release/v8.0.1/manifest.json`,
   so the first build needs network access (~60 MB) and the Minecraft client jar it lists.
-- Output: `build/libs/eightbitdo-1.0.0+8.0.1.jar` (plus a `-sources` jar).
+- Output: `build/libs/eightbitdo-1.0.1+8.0.1.jar` (plus a `-sources` jar).
 
 No refmap is generated because the mixins are `remap = false`; BTA ships unobfuscated
 classes. The compiler checks the target classes and `tools/verify.fish` checks the method

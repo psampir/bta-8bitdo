@@ -1,3 +1,13 @@
+## 1.0.1+8.0.1
+
+Mod Menu metadata only, no gameplay changes.
+
+- **Mod list icon:** the mod now ships a square 256×256 icon (`icon` in `fabric.mod.json`), so Mod Menu shows the project logo instead of the generic placeholder.
+- **Website** button in Mod Menu now opens the Modrinth page.
+- **Issues** button opens the GitHub issue tracker, and the sources link points at the repository.
+
+## 1.0.0+8.0.1
+
 First release, for Better than Adventure! 8.0.1 (Babric).
 
 **Controller support**

@@ -1,6 +1,6 @@
 {
-	"name": "1.0.0+8.0.1",
-	"version_number": "1.0.0+8.0.1",
+	"name": "1.0.1+8.0.1",
+	"version_number": "1.0.1+8.0.1",
 	"changelog_file": "changelog.md",
 	"game_versions": [
 		"b1.7.3"
@@ -11,6 +11,6 @@
 	],
 	"featured": false,
 	"dependencies": [],
-	"file": "build/libs/eightbitdo-1.0.0+8.0.1.jar",
+	"file": "build/libs/eightbitdo-1.0.1+8.0.1.jar",
 	"environment": "client_only"
 }
