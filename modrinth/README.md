@@ -1,8 +1,8 @@
 # Modrinth publishing payload
 
 Everything needed to publish **8BitDo Controller Support** (`bta-8bitdo`, version
-`1.0.1+8.0.1`) on Modrinth. Nothing has been published yet: the API needs a personal access
-token that does not exist on this machine.
+`1.0.1+8.0.1`) on Modrinth. The project is live as a draft under review; publishing needs a
+personal access token in `~/.config/modrinth/token` (see below).
 
 | File | Purpose |
 |---|---|
@@ -83,16 +83,16 @@ set -gx MODRINTH_PROJECT_ID <id>
 
 ## Current state
 
-Published as a draft on 2026-11-16:
-
 - project `hi6SzlXH`, slug `bta-8bitdo` — <https://modrinth.com/mod/bta-8bitdo>
-- version `RE4vO4qq` (`1.0.0+8.0.1`, `b1.7.3`, `bta-babric`, environment `client_only`)
+- versions: `GvLprjuV` (`1.0.1+8.0.1`, current) and `RE4vO4qq` (`1.0.0+8.0.1`); both
+  `b1.7.3`, `bta-babric`, environment `client_only`
 - icon and the in-game screenshot (gallery, featured, ordering 0) are uploaded
+- project status `processing`: created as a draft on 2026-11-16 and now under review
 
 For later versions, keep `MODRINTH_PROJECT_ID=hi6SzlXH` set and run the script again; it
 skips project creation and uploads only the new version.
 
 ## Remaining manual step
 
-Click **Submit for review** on the project page: projects are created as drafts and stay
-invisible to everyone else until Modrinth approves them.
+Nothing to publish by hand while the status is `processing`. If the project comes back to
+`draft`, click **Submit for review** on the project page.
