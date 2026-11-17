@@ -64,9 +64,21 @@ end
 set -l classpath (string join : $lwjgl_jars)
 set -l run_classpath $classpath:$slf4j:$classes:$root/src/main/resources
 
+set -l prism_data $HOME/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher
 set -l bta_jar $BTA_JAR
 if test -z "$bta_jar"
-    set bta_jar "$HOME/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/instances/BTA 8.0.1/jarmods/bta-v8.0.1.jar"
+    # Prism keeps the jar mod in the global libraries now; older instances had a
+    # jarmods folder, and the patched minecraft.jar also contains the BTA classes.
+    for candidate in \
+        "$prism_data/libraries/net/betterthanadventure/bta-client/v8.0.1/bta-client-v8.0.1-client.jar" \
+        "$prism_data/instances/BTA 8.0.1/jarmods/bta-v8.0.1.jar" \
+        "$prism_data/instances/BTA 8.0.1/minecraft/bin/minecraft.jar" \
+        "$prism_data/instances/BTA/jarmods/bta-v8.0.1.jar"
+        if test -f "$candidate"
+            set bta_jar "$candidate"
+            break
+        end
+    end
 end
 if test -f "$bta_jar"
     set -gx BTA_JAR "$bta_jar"
